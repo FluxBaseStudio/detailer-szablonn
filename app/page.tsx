@@ -1,65 +1,397 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, animate } from "framer-motion";
+import {
+  ArrowRight,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Phone,
+  Mail,
+  Check,
+  User,
+  MessageSquare,
+  Car,
+} from "lucide-react";
+
+function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const controls = animate(0, to, {
+      duration: 2.2,
+      onUpdate: (latest) => setValue(Math.round(latest)),
+    });
+
+    return () => controls.stop();
+  }, [isInView, to]);
+
+  return (
+    <span ref={ref}>
+      {value}
+      {suffix}
+    </span>
+  );
+}
 
 export default function Home() {
+  const [sent, setSent] = useState(false);
+
+  const services = [
+    "Powłoki ceramiczne",
+    "Korekta lakieru",
+    "Detailing wnętrza",
+    "Detailing premium",
+    "Zabezpieczenie folią PPF",
+    "Przygotowanie auta do sprzedaży",
+  ];
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSent(true);
+    e.currentTarget.reset();
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="bg-[#111111] text-[#F5F1E8] overflow-hidden">
+      <section className="relative min-h-screen flex items-center px-6 md:px-16">
+        <motion.div
+          initial={{ scale: 1.15 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 2 }}
+          className="absolute inset-0"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=2000&auto=format&fit=crop"
+            className="w-full h-full object-cover opacity-30"
+            alt="Samochód premium"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#111111] via-[#111111]/95 to-[#111111]/60" />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 45 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 max-w-4xl"
+        >
+          <div className="inline-flex items-center gap-2 border border-[#C6A972]/30 px-4 py-2 uppercase tracking-[0.25em] text-sm text-[#C6A972] mb-8">
+            <Sparkles size={15} />
+            NOVA DETAILING STUDIO
+          </div>
+
+          <h1 className="text-5xl md:text-8xl font-black leading-[0.9]">
+            Perfekcja
+            <br />
+            zaczyna się
+            <br />
+            od detali.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p className="mt-8 text-lg md:text-xl text-[#F5F1E8]/70 max-w-2xl leading-relaxed">
+            Premium detailing samochodowy dla osób, które oczekują perfekcyjnego
+            wyglądu auta. Powłoki ceramiczne, korekta lakieru i pełna
+            pielęgnacja wnętrza.
           </p>
+
+          <div className="mt-10 flex flex-col sm:flex-row gap-4">
+            <a
+              href="#kontakt"
+              className="bg-[#C6A972] text-black px-8 py-4 font-bold flex items-center justify-center gap-3 hover:bg-[#e2c48f] transition"
+            >
+              Umów wizytę
+              <ArrowRight size={18} />
+            </a>
+
+            <a
+              href="#uslugi"
+              className="border border-[#F5F1E8]/20 px-8 py-4 font-bold hover:bg-white hover:text-black transition text-center"
+            >
+              Zobacz usługi
+            </a>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ height: 0 }}
+          animate={{ height: "70%" }}
+          transition={{ duration: 1.2, delay: 0.4 }}
+          className="hidden md:block absolute right-12 top-24 w-[2px] bg-[#C6A972]"
+        />
+      </section>
+
+      <section className="border-y border-white/10 bg-[#151515]">
+        <div className="grid md:grid-cols-3">
+          {[
+            [250, "+", "zadowolonych klientów"],
+            [5, "★", "średnia ocen"],
+            [24, "h", "maksymalny czas kontaktu"],
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 35 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.15 }}
+              className="p-10 border-b md:border-b-0 md:border-r border-white/10"
+            >
+              <div className="text-6xl font-black text-[#C6A972]">
+                <Counter to={Number(item[0])} suffix={String(item[1])} />
+              </div>
+              <p className="mt-4 uppercase tracking-[0.2em] text-sm text-white/50">
+                {item[2]}
+              </p>
+            </motion.div>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="px-6 md:px-16 py-28 grid lg:grid-cols-2 gap-16 items-center">
+        <motion.div
+          initial={{ opacity: 0, x: -45 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+        >
+          <p className="uppercase tracking-[0.3em] text-[#C6A972] text-sm mb-5">
+            O studio
+          </p>
+
+          <h2 className="text-4xl md:text-6xl font-black leading-tight">
+            Każde auto traktujemy jak projekt premium.
+          </h2>
+
+          <p className="mt-8 text-lg text-white/65 leading-relaxed">
+            NOVA Detailing Studio specjalizuje się w kompleksowym detailingu
+            premium. Naszym celem jest przywrócenie perfekcyjnego wyglądu
+            samochodu oraz zabezpieczenie go na lata.
+          </p>
+
+          <div className="mt-10 grid sm:grid-cols-2 gap-4">
+            {[
+              "Indywidualne podejście",
+              "Najwyższej jakości chemia",
+              "Doświadczony zespół",
+              "Perfekcyjne wykończenie",
+            ].map((item, index) => (
+              <motion.div
+                key={item}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="flex items-center gap-3 border border-white/10 p-4 hover:bg-white hover:text-black transition"
+              >
+                <Check className="text-[#C6A972]" size={18} />
+                <span>{item}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+          whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="relative"
+        >
+          <div className="absolute -inset-4 border border-[#C6A972]/40 translate-x-4 translate-y-4" />
+          <img
+            src="https://images.unsplash.com/photo-1511919884226-fd3cad34687c?q=80&w=1600&auto=format&fit=crop"
+            className="relative h-[650px] w-full object-cover"
+            alt="Detailing auta"
+          />
+        </motion.div>
+      </section>
+
+      <section id="uslugi" className="bg-[#F5F1E8] text-black px-6 md:px-16 py-28">
+        <div className="max-w-3xl">
+          <p className="uppercase tracking-[0.3em] text-[#8b6a38] text-sm mb-5">
+            Usługi premium
+          </p>
+
+          <h2 className="text-4xl md:text-6xl font-black leading-tight">
+            Kompleksowy detailing dla wymagających.
+          </h2>
         </div>
-      </main>
-    </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 mt-16">
+          {services.map((service, index) => (
+            <motion.div
+              key={service}
+              initial={{ opacity: 0, y: 45 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.08 }}
+              className="border border-black/10 p-8 hover:bg-black hover:text-white transition"
+            >
+              <div className="flex justify-between items-center">
+                <ShieldCheck className="text-[#C6A972]" size={30} />
+                <span className="text-sm uppercase tracking-[0.2em] opacity-50">
+                  0{index + 1}
+                </span>
+              </div>
+
+              <h3 className="text-2xl font-black mt-10">{service}</h3>
+
+              <p className="mt-4 opacity-70 leading-relaxed">
+                Profesjonalna usługa wykonywana z najwyższą dokładnością i
+                wykorzystaniem produktów klasy premium.
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section className="px-6 md:px-16 py-28">
+        <motion.div
+          initial={{ opacity: 0, y: 35 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className="flex items-center gap-2 text-[#C6A972] mb-6">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <Star key={i} fill="#C6A972" size={20} />
+            ))}
+          </div>
+
+          <h2 className="text-4xl md:text-6xl font-black max-w-4xl leading-tight">
+            „Auto wyglądało lepiej niż po odbiorze z salonu. Pełen
+            profesjonalizm.”
+          </h2>
+
+          <p className="mt-8 text-white/50 uppercase tracking-[0.25em]">
+            — Michał Krawczyk
+          </p>
+        </motion.div>
+      </section>
+
+      <section id="kontakt" className="bg-[#1A1A1A] px-6 md:px-16 py-28">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -35 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+          >
+            <p className="uppercase tracking-[0.3em] text-[#C6A972] text-sm mb-5">
+              Kontakt
+            </p>
+
+            <h2 className="text-4xl md:text-7xl font-black leading-[0.95]">
+              Zadbaj o swoje auto już dziś.
+            </h2>
+
+            <p className="mt-8 text-white/60 text-lg max-w-xl">
+              Wypełnij formularz, a studio skontaktuje się z Tobą w celu
+              ustalenia terminu.
+            </p>
+
+            <div className="mt-10 space-y-4">
+              <div className="flex items-center gap-4">
+                <Phone className="text-[#C6A972]" />
+                <span>+48 500 000 000</span>
+              </div>
+
+              <div className="flex items-center gap-4">
+                <Mail className="text-[#C6A972]" />
+                <span>kontakt@novadetailing.pl</span>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.form
+            onSubmit={handleSubmit}
+            initial={{ opacity: 0, y: 45 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="border border-white/10 p-8 md:p-10 bg-black/25 backdrop-blur-sm space-y-5"
+          >
+            <div>
+              <label className="text-sm uppercase tracking-[0.2em] text-white/50">
+                Imię i nazwisko
+              </label>
+              <div className="mt-2 flex items-center gap-3 border border-white/10 px-4 py-4">
+                <User className="text-[#C6A972]" size={18} />
+                <input
+                  required
+                  name="name"
+                  placeholder="Jan Kowalski"
+                  className="w-full bg-transparent outline-none text-white placeholder:text-white/30"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm uppercase tracking-[0.2em] text-white/50">
+                Telefon
+              </label>
+              <div className="mt-2 flex items-center gap-3 border border-white/10 px-4 py-4">
+                <Phone className="text-[#C6A972]" size={18} />
+                <input
+                  required
+                  name="phone"
+                  placeholder="+48 500 000 000"
+                  className="w-full bg-transparent outline-none text-white placeholder:text-white/30"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm uppercase tracking-[0.2em] text-white/50">
+                Samochód
+              </label>
+              <div className="mt-2 flex items-center gap-3 border border-white/10 px-4 py-4">
+                <Car className="text-[#C6A972]" size={18} />
+                <input
+                  name="car"
+                  placeholder="BMW M4 / Audi A6 / Mercedes"
+                  className="w-full bg-transparent outline-none text-white placeholder:text-white/30"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm uppercase tracking-[0.2em] text-white/50">
+                Wiadomość
+              </label>
+              <div className="mt-2 flex items-start gap-3 border border-white/10 px-4 py-4">
+                <MessageSquare className="text-[#C6A972] mt-1" size={18} />
+                <textarea
+                  required
+                  name="message"
+                  placeholder="Napisz, jaką usługą jesteś zainteresowany..."
+                  rows={5}
+                  className="w-full bg-transparent outline-none text-white placeholder:text-white/30 resize-none"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-[#C6A972] text-black py-5 font-black text-lg hover:bg-[#e0c189] transition flex items-center justify-center gap-3"
+            >
+              WYŚLIJ ZAPYTANIE
+              <ArrowRight size={19} />
+            </button>
+
+            {sent && (
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-[#C6A972] text-center font-bold"
+              >
+                Wiadomość została wysłana. Dziękujemy za kontakt!
+              </motion.p>
+            )}
+          </motion.form>
+        </div>
+      </section>
+    </main>
   );
 }
